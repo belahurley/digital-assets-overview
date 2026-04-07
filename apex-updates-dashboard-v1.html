@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Digital Assets — Executive Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --white: #ffffff;
+    --ink: #111214;
+    --ink-mid: #3b3d42;
+    --ink-light: #6b7280;
+    --ink-faint: #9ca3af;
+    --border: #e5e7eb;
+    --border-mid: #d1d5db;
+
+    --stable: #9b1c3a;
+    --stable-light: rgba(155,28,58,0.07);
+    --token: #1e3a8a;
+    --token-light: rgba(30,58,138,0.07);
+    --crypto: #065f46;
+    --crypto-light: rgba(6,95,70,0.07);
+
+    --adm:  #2563eb;
+    --acc:  #7c3aed;
+    --caas: #059669;
+
+    --green: #059669;
+    --amber: #d97706;
+    --red:   #dc2626;
+
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+
+    /* sub-initiative accent colors */
+    --dtc:    #0e7490;
+    --dtc-bg: rgba(14,116,144,0.07);
+    --cust:   #0e7490;
+    --cust-bg:rgba(14,116,144,0.07);
+    --fp:     #0e7490;
+    --fp-bg:  rgba(14,116,144,0.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .header-inner {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 1.5rem 0 1rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .header-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.3rem;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  .header-title em { font-style: italic; font-weight: 600; }
+
+  .header-date {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    font-style: italic;
+    text-align: right;
+  }
+
+  .header-tabs {
+    max-width: 1380px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    margin-top: 0.5rem;
+  }
+
+  .tab {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.6rem 1rem 0.6rem 0;
+    color: var(--ink-faint);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.12s;
+  }
+
+  .tab:hover { color: var(--ink-light); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ── CATEGORY PAGES ── */
+  .cat-page {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .cat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .cat-stable .col-header { border-top-color: var(--stable); background: var(--stable-light); }
+  .cat-token  .col-header { border-top-color: var(--token);  background: var(--token-light);  }
+  .cat-crypto .col-header { border-top-color: var(--crypto); background: var(--crypto-light); }
+
+  .cat-title { font-size: 1.4rem; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+
+  .cat-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cat-q-label {
+    font-size: 0.82rem; font-weight: 700; color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.01em;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 2rem 2rem 5rem;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 1rem;
+  }
+
+  /* ── COLUMNS ── */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1.55fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+    align-items: start;
+  }
+
+  /* ── COL CARD ── */
+  .col-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .col-header {
+    padding: 1rem 1.25rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-top: 4px solid transparent;
+  }
+
+  .col-stable .col-header { border-top-color: var(--stable); background: var(--stable-light); }
+  .col-token  .col-header { border-top-color: var(--token);  background: var(--token-light);  }
+  .col-crypto .col-header { border-top-color: var(--crypto); background: var(--crypto-light); }
+
+  .col-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── SUBTAGS ── */
+  .subtags { display: flex; gap: 0.3rem; flex-shrink: 0; align-items: flex-start; }
+
+  .subtag {
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.12s;
+    user-select: none;
+    text-transform: uppercase;
+  }
+
+  .subtag.adm  { color: var(--adm);  background: rgba(37,99,235,0.08);  border-color: rgba(37,99,235,0.2);  }
+  .subtag.acc  { color: var(--acc);  background: rgba(124,58,237,0.08); border-color: rgba(124,58,237,0.2); }
+  .subtag.caas { color: var(--caas); background: rgba(5,150,105,0.08);  border-color: rgba(5,150,105,0.2);  }
+  .subtag:hover { opacity: 0.75; }
+  .subtag.active { color: white !important; border-color: transparent !important; }
+  .subtag.adm.active  { background: var(--adm)  !important; }
+  .subtag.acc.active  { background: var(--acc)  !important; }
+  .subtag.caas.active { background: var(--caas) !important; }
+
+  /* ── COL BODY ── */
+  .col-body {
+    padding: 1rem 1.1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .subsection-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.1rem;
+  }
+
+  /* ── UPDATE ENTRIES ── */
+  .update-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .update-entry {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    padding: 0.7rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    position: relative;
+    border-left: 3px solid transparent;
+  }
+
+  .update-entry.rag-green { border-left-color: var(--green); }
+  .update-entry.rag-amber { border-left-color: var(--amber); }
+  .update-entry.rag-red   { border-left-color: var(--red);   }
+
+  .entry-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }
+  .entry-meta-left { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+
+  .entry-tag {
+    font-size: 0.57rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+
+  .tag-adm  { color: var(--adm);  background: rgba(37,99,235,0.1);  }
+  .tag-acc  { color: var(--acc);  background: rgba(124,58,237,0.1); }
+  .tag-caas { color: var(--caas); background: rgba(5,150,105,0.1);  }
+  .tag-all  { color: var(--ink-faint); background: rgba(0,0,0,0.05); }
+
+  .rag-pill { font-size: 0.57rem; font-weight: 500; padding: 0.15rem 0.45rem; border-radius: 4px; }
+  .rag-pill.green { color: var(--green); background: rgba(5,150,105,0.1); }
+  .rag-pill.amber { color: var(--amber); background: rgba(217,119,6,0.1);  }
+  .rag-pill.red   { color: var(--red);   background: rgba(220,38,38,0.1);  }
+
+  .entry-date { font-size: 0.7rem; color: var(--ink-faint); font-style: italic; flex-shrink: 0; }
+
+  .entry-text { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+
+  .entry-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.18rem; margin-top: 0.1rem; }
+  .entry-bullets li { font-size: 0.79rem; color: var(--ink-mid); line-height: 1.5; padding-left: 0.9rem; position: relative; }
+  .entry-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--ink-faint); }
+
+  .entry-delete {
+    position: absolute; top: 0.5rem; right: 0.55rem;
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 0.68rem; opacity: 0; transition: opacity 0.12s, color 0.12s;
+  }
+  .update-entry:hover .entry-delete { opacity: 1; }
+  .entry-delete:hover { color: var(--red); }
+
+  /* ── ADD BUTTON ── */
+  .add-btn {
+    font-size: 0.65rem; font-weight: 500; color: var(--ink-faint);
+    background: none; border: 1.5px dashed var(--border-mid); border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem; cursor: pointer; transition: all 0.12s;
+    text-align: center; width: 100%;
+  }
+  .add-btn:hover { color: var(--ink-mid); border-color: var(--ink-faint); background: var(--bg); }
+
+  /* ── DIVIDER ── */
+  .col-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.25rem 0;
+  }
+
+  /* ══════════════════════════════════════
+     TOKENIZATION COLUMN — EXTENDED LAYOUT
+  ══════════════════════════════════════ */
+  .col-token-body {
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* General updates within tokenization */
+  .token-general {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Sub-initiatives container */
+  .sub-initiatives {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .sub-initiative-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.1rem;
+  }
+
+  /* Each sub-initiative card */
+  .si-card {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .si-header {
+    padding: 0.6rem 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .si-dtc  .si-header { border-left-color: var(--dtc);  background: var(--dtc-bg);  }
+  .si-cust .si-header { border-left-color: var(--cust); background: var(--cust-bg); }
+  .si-fp   .si-header { border-left-color: var(--fp);   background: var(--fp-bg);   }
+
+  .si-header-left { display: flex; align-items: center; gap: 0.5rem; }
+
+  .si-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  .si-dtc  .si-dot { background: var(--dtc); }
+  .si-cust .si-dot { background: var(--cust); }
+  .si-fp   .si-dot { background: var(--fp); }
+
+  .si-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .si-dtc  .si-title { color: var(--dtc);  }
+  .si-cust .si-title { color: var(--cust); }
+  .si-fp   .si-title { color: var(--fp);   }
+
+  .si-chevron {
+    font-size: 0.6rem;
+    color: var(--ink-faint);
+    transition: transform 0.15s;
+  }
+
+  .si-card.collapsed .si-chevron { transform: rotate(-90deg); }
+
+  .si-body {
+    padding: 0.65rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    background: var(--white);
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s;
+    max-height: 999px;
+  }
+
+  .si-card.collapsed .si-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  /* Bullet entries within sub-initiative */
+  .si-bullet-list { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .si-bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.45rem 0.6rem;
+    background: var(--bg);
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .si-bullet-dash { font-size: 0.5rem; color: var(--ink-faint); flex-shrink: 0; padding-top: 4px; }
+
+  .si-bullet-meta { display: flex; flex-direction: column; gap: 0.1rem; flex: 1; }
+
+  .si-bullet-text { font-size: 0.79rem; color: var(--ink-mid); line-height: 1.48; }
+
+  .si-bullet-rag {
+    font-size: 0.54rem;
+    font-weight: 500;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    align-self: flex-start;
+    margin-top: 0.15rem;
+  }
+
+  .si-bullet-rag.open     { color: var(--amber); background: rgba(217,119,6,0.1);  }
+  .si-bullet-rag.resolved { color: var(--green); background: rgba(5,150,105,0.1); }
+  .si-bullet-rag.green    { color: var(--green); background: rgba(5,150,105,0.1);  }
+  .si-bullet-rag.amber    { color: var(--amber); background: rgba(217,119,6,0.1);  }
+  .si-bullet-rag.red      { color: var(--red);   background: rgba(220,38,38,0.1);  }
+
+  .si-delete {
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 0.65rem; opacity: 0; transition: opacity 0.12s, color 0.12s; flex-shrink: 0; padding-top: 1px;
+  }
+  .si-bullet-item:hover .si-delete { opacity: 1; }
+  .si-delete:hover { color: var(--red); }
+
+  .si-add-btn {
+    font-size: 0.6rem; font-weight: 500; color: var(--ink-faint);
+    background: none; border: 1.5px dashed var(--border-mid); border-radius: var(--radius-xs);
+    padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.12s;
+    text-align: center; width: 100%; margin-top: 0.1rem;
+  }
+  .si-add-btn:hover { color: var(--ink-mid); border-color: var(--ink-faint); background: var(--bg); }
+
+  /* ── OPEN QUESTIONS ── */
+  .questions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .q-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .q-header {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 4px solid transparent;
+  }
+
+  .q-stable .q-header { border-top-color: var(--stable); background: var(--stable-light); }
+  .q-token  .q-header { border-top-color: var(--token);  background: var(--token-light);  }
+  .q-crypto .q-header { border-top-color: var(--crypto); background: var(--crypto-light); }
+
+  .q-title { font-size: 0.82rem; font-weight: 700; color: var(--ink); font-family: 'Playfair Display', serif; }
+
+  .q-add-btn {
+    font-size: 0.6rem; font-weight: 600; color: var(--ink-faint);
+    background: white; border: 1px solid var(--border-mid); border-radius: 6px;
+    padding: 0.2rem 0.65rem; cursor: pointer; transition: all 0.12s;
+  }
+  .q-add-btn:hover { color: var(--ink); border-color: var(--ink-light); }
+
+  .q-body { padding: 0.85rem 1.1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+
+  .q-item {
+    display: flex; align-items: flex-start; gap: 0.55rem;
+    padding: 0.55rem 0.7rem; background: var(--bg);
+    border-radius: var(--radius-sm); border: 1px solid var(--border); position: relative;
+  }
+
+  .q-num { font-size: 0.6rem; font-weight: 700; color: var(--ink); flex-shrink: 0; padding-top: 1px; }
+  .q-text { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.5; flex: 1; }
+
+  .q-item-subtag {
+    font-size: 0.54rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.12rem 0.38rem; border-radius: 4px; flex-shrink: 0; align-self: flex-start; margin-top: 1px;
+  }
+
+  .q-delete {
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 0.65rem; opacity: 0; transition: opacity 0.12s, color 0.12s; flex-shrink: 0; padding-top: 1px;
+  }
+  .q-item:hover .q-delete { opacity: 1; }
+  .q-delete:hover { color: var(--red); }
+
+  /* ── SHARED WORKSTREAMS MATRIX ── */
+  .sw-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+  }
+
+  .sw-header {
+    padding: 0.75rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sw-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink);
+    font-family: 'Playfair Display', serif;
+  }
+
+  .sw-add-btn {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    background: white;
+    border: 1px solid var(--border-mid);
+    border-radius: 6px;
+    padding: 0.2rem 0.65rem;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .sw-add-btn:hover { color: var(--ink); border-color: var(--ink-light); }
+
+  .sw-body { padding: 0.75rem 1.1rem; }
+
+  .sw-table { width: 100%; border-collapse: collapse; }
+
+  .sw-table th {
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 0 0.4rem 0.5rem;
+    text-align: center;
+    width: 28px;
+  }
+
+  .sw-table th.sw-name-col {
+    text-align: left;
+    width: auto;
+    padding-left: 0;
+  }
+
+  .sw-table td {
+    padding: 0.3rem 0.4rem;
+    text-align: center;
+    vertical-align: middle;
+    border-top: 1px solid var(--border);
+  }
+
+  .sw-table td.sw-name-cell {
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--ink-mid);
+    padding-left: 0;
+    font-weight: 500;
+  }
+
+  .sw-table td.sw-name-cell .sw-rag {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .sw-table td.sw-name-cell .sw-note {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+    font-weight: 400;
+    margin-top: 0.1rem;
+    padding-left: 1rem;
+  }
+
+  .sw-col-cur { background: rgba(0,0,0,0.025); }
+
+  .sw-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .sw-dot-filled-stable { background: var(--stable); }
+  .sw-dot-filled-token  { background: var(--token);  }
+  .sw-dot-filled-crypto { background: var(--crypto); }
+  .sw-dot-empty { background: transparent; border: 1.5px solid var(--border-mid); }
+
+  .sw-name-link {
+    cursor: pointer;
+    color: var(--ink-mid);
+    font-weight: 500;
+  }
+  .sw-name-link:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--border-mid); }
+
+  .sw-note-toggle {
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .sw-note-toggle:hover { color: var(--ink-light); }
+
+  .sw-note-text {
+    font-size: 0.65rem;
+    color: var(--ink-light);
+    margin-top: 0.25rem;
+    padding-left: 1rem;
+    line-height: 1.45;
+  }
+
+  .sw-empty { font-size: 0.75rem; font-style: italic; color: var(--ink-faint); text-align: center; padding: 0.5rem 0; }
+  .empty-state { font-size: 0.78rem; font-style: italic; color: var(--ink-faint); text-align: center; padding: 0.75rem 0; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(17,18,20,0.45);
+    backdrop-filter: blur(4px); z-index: 100; display: flex;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.18s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--white); border-radius: var(--radius); border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15); width: 500px; max-width: 95vw;
+    transform: translateY(10px) scale(0.99); transition: transform 0.18s; overflow: hidden;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header { padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+  .modal-subtitle { font-size: 0.7rem; color: var(--ink-faint); margin-top: 0.2rem; font-style: italic; }
+
+  .modal-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .modal-field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+  .modal-label {
+    font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-light);
+  }
+
+  .modal-hint { font-size: 0.6rem; font-weight: 400; color: var(--ink-faint); letter-spacing: 0; text-transform: none; }
+
+  .modal-input, .modal-textarea, .modal-select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border-mid);
+    border-radius: var(--radius-sm); color: var(--ink); font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; padding: 0.55rem 0.8rem; outline: none;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .modal-input:focus, .modal-textarea:focus, .modal-select:focus {
+    border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+  }
+  .modal-textarea { min-height: 80px; resize: vertical; line-height: 1.55; }
+  .modal-select option { background: var(--white); }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+  .modal-footer {
+    display: flex; gap: 0.6rem; justify-content: flex-end;
+    padding: 1rem 1.5rem; background: var(--bg); border-top: 1px solid var(--border);
+  }
+
+  .btn-cancel {
+    font-size: 0.72rem; font-weight: 500; color: var(--ink-light); background: var(--white);
+    border: 1px solid var(--border-mid); border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem; cursor: pointer; transition: all 0.12s;
+  }
+  .btn-cancel:hover { border-color: var(--ink-light); color: var(--ink); }
+
+  .btn-save {
+    font-size: 0.72rem; font-weight: 600; color: white; background: var(--ink);
+    border: 1px solid var(--ink); border-radius: var(--radius-sm);
+    padding: 0.5rem 1.25rem; cursor: pointer; transition: background 0.12s;
+  }
+  .btn-save:hover { background: #2d2f36; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; background: var(--ink); color: white;
+    border-radius: var(--radius-sm); padding: 0.6rem 1.1rem; font-size: 0.7rem; font-weight: 500;
+    z-index: 200; transform: translateY(10px); opacity: 0; transition: all 0.2s;
+    pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── DRAG TO REORDER ── */
+  .drag-handle {
+    color: var(--ink-faint); cursor: grab; font-size: 0.72rem;
+    opacity: 0; transition: opacity 0.12s; user-select: none; flex-shrink: 0; padding-top: 1px;
+  }
+  .update-entry:hover .drag-handle,
+  .si-bullet-item:hover .drag-handle { opacity: 1; }
+  .update-entry.drag-over { border-top: 2px solid #6366f1; }
+  .si-bullet-item.drag-over { border-top: 2px solid #6366f1; }
+  .entry-inner { display: flex; align-items: flex-start; gap: 0.4rem; }
+  .entry-inner .entry-bullets { flex: 1; }
+
+  /* ── INLINE EDIT ── */
+  .entry-bullets li { cursor: pointer; }
+  .entry-bullets li:hover { color: var(--ink); }
+  .si-bullet-text { cursor: pointer; }
+  .si-bullet-text:hover { color: var(--ink); }
+
+  .bullet-edit-input {
+    width: 100%; background: var(--white); border: 1px solid var(--border-mid);
+    border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.79rem;
+    color: var(--ink); padding: 0.2rem 0.4rem; outline: none;
+    resize: vertical; line-height: 1.55; display: block;
+  }
+  .bullet-edit-input:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,0.12); }
+  .bullet-edit-actions { display: flex; gap: 0.3rem; margin-top: 0.25rem; }
+  .bullet-edit-actions button {
+    font-size: 0.6rem; font-weight: 600; padding: 0.15rem 0.5rem;
+    border-radius: 3px; cursor: pointer; border: 1px solid var(--border-mid);
+    background: var(--white); color: var(--ink-light); transition: opacity 0.1s;
+  }
+  .bullet-edit-actions button.save-btn { color: white; background: var(--ink); border-color: var(--ink); }
+  .bullet-edit-actions button:hover { opacity: 0.75; }
+
+  /* ── DIAGRAM CARDS ── */
+  .diag-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .diag-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .diag-header {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    border-top: 4px solid transparent;
+  }
+
+  .diag-acc .diag-header { border-top-color: var(--acc); background: rgba(124,58,237,0.05); }
+  .diag-adm .diag-header { border-top-color: var(--adm); background: rgba(37,99,235,0.05); }
+
+  .diag-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  .diag-body {
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s;
+    max-height: 2000px;
+    padding: 1rem;
+  }
+
+  .diag-collapsed .diag-body { max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .diag-collapsed .si-chevron { transform: rotate(-90deg); }
+
+  .diag-upload-btn {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: 0.62rem;
+    color: var(--ink-faint);
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.12s;
+  }
+  .diag-upload-btn:hover { color: var(--ink-light); }
+
+  .diag-body img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    display: block;
+  }
+
+  /* ── USE CASE ITEMS ── */
+  .uc-item {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    padding: 0.75rem 0.9rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .uc-item-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .uc-sub-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.1rem;
+  }
+
+  .uc-sub-bullets li {
+    font-size: 0.79rem;
+    color: var(--ink-mid);
+    line-height: 1.52;
+    padding-left: 0.9rem;
+    position: relative;
+  }
+
+  .uc-sub-bullets li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--ink-faint);
+  }
+
+  .uc-delete {
+    position: absolute; top: 0.5rem; right: 0.55rem;
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 0.68rem; opacity: 0; transition: opacity 0.12s, color 0.12s;
+  }
+  .uc-item:hover .uc-delete { opacity: 1; }
+  .uc-delete:hover { color: var(--red); }
+
+  .diag-placeholder {
+    width: 100%;
+    min-height: 180px;
+    border: 2px dashed var(--border-mid);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ── USE CASES COLLAPSIBLE ── */
+  .uc-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s;
+    max-height: 2000px;
+  }
+  .uc-collapsed .uc-body { max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .uc-collapsed .si-chevron { transform: rotate(-90deg); }
+
+  /* ── JIRA ACTIVITY ── */
+  .jira-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 2.5rem;
+  }
+  .jira-entry {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .jira-summary {
+    font-size: 0.83rem;
+    color: var(--ink-mid);
+    line-height: 1.58;
+  }
+  .jira-meta {
+    font-size: 0.67rem;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .jira-key { font-weight: 600; letter-spacing: 0.04em; }
+  .jira-empty {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--ink-faint);
+    padding: 0.5rem 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-eyebrow">Apex Fintech Solutions · Digital Assets Initiative</div>
+      <div class="header-title">Digital Assets</div>
+    </div>
+    <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:0.4rem;">
+      <div class="header-date" id="datestamp"></div>
+      <div id="save-status" style="font-size:0.65rem; color:var(--ink-faint);">No changes yet</div>
+    </div>
+  </div>
+  <div class="header-tabs">
+    <div class="tab active" onclick="switchTab('main',this)">Project Updates</div>
+    <div class="tab" onclick="switchTab('stable',this)">Stablecoin</div>
+    <div class="tab" onclick="switchTab('token',this)">Tokenized Securities</div>
+    <div class="tab" onclick="switchTab('crypto',this)">Crypto</div>
+  </div>
+</header>
+
+<main>
+<div id="view-main">
+  <div class="section-label">Project Updates</div>
+  <div class="columns">
+
+    <!-- ── STABLECOIN ── -->
+    <div class="col-card col-stable">
+      <div class="col-header">
+        <div>
+          <div class="col-title">Stablecoin</div>
+          <div style="font-size:0.62rem;color:var(--ink-light);margin-top:0.2rem;"><span style="font-weight:600;">Goal:</span> Enable correspondents and their end customers to fund accounts and settle trades in stablecoins.</div>
+        </div>
+        <div class="subtags">
+          <span class="subtag adm" style="cursor:default;">ADM</span>
+          <span class="subtag acc" style="cursor:default;">ACC <span style="font-weight:300;opacity:0.7;">· 2027</span></span>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="subsection-label">Updates</div>
+        <div class="update-list" id="updates-stable"></div>
+        <button class="add-btn" onclick="openModal('update','stable')">+ Add Update</button>
+      </div>
+    </div>
+
+    <!-- ── TOKENIZATION (WIDE) ── -->
+    <div class="col-card col-token">
+      <div class="col-header">
+        <div>
+          <div class="col-title">Tokenized Securities</div>
+          <div style="font-size:0.62rem;color:var(--ink-light);margin-top:0.2rem;"><span style="font-weight:600;">Goal:</span> Establish ACC as essential clearing infrastructure for the tokenized securities era — power Ascend as the essential middle layer between the street and our clients for all assets.</div>
+        </div>
+        <div class="subtags">
+          <span class="subtag acc" style="cursor:default;">ACC</span>
+        </div>
+      </div>
+
+      <div class="col-token-body">
+
+        <!-- General updates -->
+        <div class="token-general">
+          <div class="subsection-label">General Updates</div>
+          <div class="update-list" id="updates-token"></div>
+          <button class="add-btn" onclick="openModal('update','token')">+ Add General Update</button>
+        </div>
+
+        <div class="col-divider"></div>
+
+        <!-- Sub-initiatives -->
+        <div class="sub-initiatives">
+          <div class="sub-initiative-label">Initiatives</div>
+
+          <!-- DTC Pilot Program -->
+          <div class="si-card si-dtc" id="si-dtc">
+            <div class="si-header" onclick="toggleSI('dtc')">
+              <div class="si-header-left">
+                <div class="si-dot"></div>
+                <div class="si-title">DTC Pilot Program</div>
+              </div>
+              <span class="si-chevron">▾</span>
+            </div>
+            <div class="si-body">
+              <div class="si-bullet-list" id="si-list-dtc"></div>
+              <button class="si-add-btn" onclick="openSIModal('dtc')">+ Add Update</button>
+            </div>
+          </div>
+
+          <!-- Custodial Model Initiative -->
+          <div class="si-card si-cust" id="si-cust">
+            <div class="si-header" onclick="toggleSI('cust')">
+              <div class="si-header-left">
+                <div class="si-dot"></div>
+                <div class="si-title">Custodial Model</div>
+              </div>
+              <span class="si-chevron">▾</span>
+            </div>
+            <div class="si-body">
+              <div class="si-bullet-list" id="si-list-cust"></div>
+              <button class="si-add-btn" onclick="openSIModal('cust')">+ Add Update</button>
+            </div>
+          </div>
+
+          <!-- First Party Native Issuance -->
+          <div class="si-card si-fp" id="si-fp">
+            <div class="si-header" onclick="toggleSI('fp')">
+              <div class="si-header-left">
+                <div class="si-dot"></div>
+                <div class="si-title">First Party Native Issuance</div>
+              </div>
+              <span class="si-chevron">▾</span>
+            </div>
+            <div class="si-body">
+              <div class="si-bullet-list" id="si-list-fp"></div>
+              <button class="si-add-btn" onclick="openSIModal('fp')">+ Add Update</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CRYPTO ── -->
+    <div class="col-card col-crypto">
+      <div class="col-header">
+        <div>
+          <div class="col-title">Crypto</div>
+          <div style="font-size:0.62rem;color:var(--ink-light);margin-top:0.2rem;"><span style="font-weight:600;">Goal:</span> Offer crypto trading (buy, sell, hold) to all clients through ADM.</div>
+        </div>
+        <div class="subtags">
+          <span class="subtag adm" style="cursor:default;">ADM</span>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="subsection-label">Updates</div>
+        <div class="update-list" id="updates-crypto"></div>
+        <button class="add-btn" onclick="openModal('update','crypto')">+ Add Update</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── DIAGRAMS ── -->
+  <div class="diag-grid">
+
+    <div class="diag-card diag-acc" id="diag-card-acc">
+      <div class="diag-header" onclick="toggleDiag('acc')">
+        <span class="diag-title">ACC — Architecture Diagram</span>
+        <span class="si-chevron">▾</span>
+      </div>
+      <div class="diag-body" id="diag-body-acc">
+        <div class="diag-placeholder" id="diag-placeholder-acc">Image pending</div>
+        <img id="diag-img-acc" src="" alt="ACC Diagram" style="display:none;">
+        <input type="file" id="diag-file-acc" accept="image/*" style="display:none;" onchange="uploadDiag('acc',this)">
+        <label for="diag-file-acc" class="diag-upload-btn">Upload image</label>
+      </div>
+    </div>
+
+    <div class="diag-card diag-adm" id="diag-card-adm">
+      <div class="diag-header" onclick="toggleDiag('adm')">
+        <span class="diag-title">ADM — Architecture Diagram</span>
+        <span class="si-chevron">▾</span>
+      </div>
+      <div class="diag-body" id="diag-body-adm">
+        <div class="diag-placeholder" id="diag-placeholder-adm">Image pending</div>
+        <img id="diag-img-adm" src="" alt="ADM Diagram" style="display:none;">
+        <input type="file" id="diag-file-adm" accept="image/*" style="display:none;" onchange="uploadDiag('adm',this)">
+        <label for="diag-file-adm" class="diag-upload-btn">Upload image</label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── OPEN QUESTIONS ── -->
+  <div class="section-label">Open Questions</div>
+  <div class="questions-grid">
+
+    <div class="q-card q-stable">
+      <div class="q-header">
+        <span class="q-title">Stablecoin</span>
+        <button class="q-add-btn" onclick="openModal('question','stable')">+ Add</button>
+      </div>
+      <div class="q-body" id="questions-stable"></div>
+    </div>
+
+    <div class="q-card q-token">
+      <div class="q-header">
+        <span class="q-title">Tokenized Securities</span>
+        <button class="q-add-btn" onclick="openModal('question','token')">+ Add</button>
+      </div>
+      <div class="q-body" id="questions-token"></div>
+    </div>
+
+    <div class="q-card q-crypto">
+      <div class="q-header">
+        <span class="q-title">Crypto</span>
+        <button class="q-add-btn" onclick="openModal('question','crypto')">+ Add</button>
+      </div>
+      <div class="q-body" id="questions-crypto"></div>
+    </div>
+
+  </div>
+  <!-- ── JIRA ACTIVITY ── -->
+  <div class="section-label" style="margin-top:2rem;">Jira Activity <span style="font-weight:400;font-style:italic;color:var(--ink-faint);">— last 10 days</span></div>
+  <div class="jira-grid" id="jira-activity-grid"></div>
+
+</div><!-- end view-main -->
+
+<!-- ── STABLECOIN PAGE ── -->
+<div id="view-stable" style="display:none;">
+  <div class="cat-page">
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <div class="cat-card cat-stable">
+        <div class="col-header" style="border-top:4px solid var(--stable);">
+          <div>
+            <div class="cat-title">Stablecoin</div>
+            <div style="font-size:0.65rem;color:var(--ink-light);margin-top:0.2rem;"><span style="font-weight:600;">Goal:</span> Enable correspondents and their end customers to fund accounts and settle trades in stablecoins.</div>
+          </div>
+          <div class="subtags">
+            <span class="subtag adm" style="cursor:default;">ADM</span>
+            <span class="subtag acc" style="cursor:default;">ACC <span style="font-weight:300;opacity:0.7;">· 2027</span></span>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="subsection-label">Updates</div>
+          <div class="update-list" id="cat-updates-stable"></div>
+          <button class="add-btn" onclick="openModal('update','stable')">+ Add Update</button>
+        </div>
+      </div>
+      <div class="cat-card cat-stable" id="uc-card-stable">
+        <div class="col-header" style="border-top:4px solid var(--stable);cursor:pointer;" onclick="toggleUC('stable')">
+          <span class="cat-q-label">Use Cases</span>
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <button class="q-add-btn" onclick="event.stopPropagation();openModal('usecase','stable')">+ Add</button>
+            <span class="si-chevron">▾</span>
+          </div>
+        </div>
+        <div class="uc-body" id="cat-usecases-stable"></div>
+      </div>
+    </div>
+    <div class="sidebar-col">
+      <div class="sw-card">
+        <div class="sw-header">
+          <span class="sw-title">Shared Workstreams</span>
+          <button class="sw-add-btn" onclick="openSWModal()">+ Add</button>
+        </div>
+        <div class="sw-body">
+          <div id="sw-matrix-stable"></div>
+        </div>
+      </div>
+      <div class="q-card q-stable">
+        <div class="q-header">
+          <span class="cat-q-label">Open Questions</span>
+          <button class="q-add-btn" onclick="openModal('question','stable')">+ Add</button>
+        </div>
+        <div class="q-body" id="cat-questions-stable"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOKENIZED SECURITIES PAGE ── -->
+<div id="view-token" style="display:none;">
+  <div class="cat-page">
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <div class="cat-card cat-token">
+        <div class="col-header" style="border-top:4px solid var(--token);">
+          <div>
+            <div class="cat-title">Tokenized Securities</div>
+            <div style="font-size:0.65rem;color:var(--ink-light);margin-top:0.2rem;"><span style="font-weight:600;">Goal:</span> Establish ACC as essential clearing infrastructure for the tokenized securities era — power Ascend as the essential middle layer between the street and our clients for all assets.</div>
+          </div>
+          <div class="subtags">
+            <span class="subtag acc" style="cursor:default;">ACC</span>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="subsection-label">General Updates</div>
+          <div class="update-list" id="cat-updates-token"></div>
+          <button class="add-btn" onclick="openModal('update','token')">+ Add General Update</button>
+          <div class="col-divider"></div>
+          <div class="sub-initiative-label">Initiatives</div>
+          <div class="si-card si-dtc" id="cat-si-dtc">
+            <div class="si-header" onclick="toggleSI('dtc')">
+              <div class="si-header-left"><div class="si-dot"></div><div class="si-title">DTC Pilot Program</div></div>
+              <span class="si-chevron">▾</span>
+            </div>
+            <div class="si-body">
+              <div class="si-bullet-list" id="cat-si-list-dtc"></div>
+              <button class="si-add-btn" onclick="openSIModal('dtc')">+ Add Update</button>
+            </div>
+          </div>
+          <div class="si-card si-cust" id="cat-si-cust">
+            <div class="si-header" onclick="toggleSI('cust')">
+              <div class="si-header-left"><div class="si-dot"></div><div class="si-title">Custodial Model</div></div>
+              <span class="si-chevron">▾</span>
+            </div>
+            <div class="si-body">
+              <div class="si-bullet-list" id="cat-si-list-cust"></div>
+              <button class="si-add-btn" onclick="openSIModal('cust')">+ Add Update</button>
+            </div>
+          </div>
+          <div class="si-card si-fp" id="cat-si-fp">
+            <div class="si-header" onclick="toggleSI('fp')">
+              <div class="si-header-left"><div class="si-dot"></div><div class="si-title">First Party Native Issuance</div></div>
+              <span class="si-chevron">▾</span>
+            </div>
+            <div class="si-body">
+              <div class="si-bullet-list" id="cat-si-list-fp"></div>
+              <button class="si-add-btn" onclick="openSIModal('fp')">+ Add Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cat-card cat-token" id="uc-card-token">
+        <div class="col-header" style="border-top:4px solid var(--token);cursor:pointer;" onclick="toggleUC('token')">
+          <span class="cat-q-label">Use Cases</span>
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <button class="q-add-btn" onclick="event.stopPropagation();openModal('usecase','token')">+ Add</button>
+            <span class="si-chevron">▾</span>
+          </div>
+        </div>
+        <div class="uc-body" id="cat-usecases-token"></div>
+      </div>
+    </div>
+    <div class="sidebar-col">
+      <div class="sw-card">
+        <div class="sw-header">
+          <span class="sw-title">Shared Workstreams</span>
+          <button class="sw-add-btn" onclick="openSWModal()">+ Add</button>
+        </div>
+        <div class="sw-body">
+          <div id="sw-matrix-token"></div>
+        </div>
+      </div>
+      <div class="q-card q-token">
+        <div class="q-header">
+          <span class="cat-q-label">Open Questions</span>
+          <button class="q-add-btn" onclick="openModal('question','token')">+ Add</button>
+        </div>
+        <div class="q-body" id="cat-questions-token"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CRYPTO PAGE ── -->
+<div id="view-crypto" style="display:none;">
+  <div class="cat-page">
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <div class="cat-card cat-crypto">
+        <div class="col-header" style="border-top:4px solid var(--crypto);">
+          <div>
+            <div class="cat-title">Crypto</div>
+            <div style="font-size:0.65rem;color:var(--ink-light);margin-top:0.2rem;"><span style="font-weight:600;">Goal:</span> Offer crypto trading (buy, sell, hold) to all clients through ADM.</div>
+          </div>
+          <div class="subtags">
+            <span class="subtag adm" style="cursor:default;">ADM</span>
+          </div>
+        </div>
+        <div class="cat-body">
+          <div class="subsection-label">Updates</div>
+          <div class="update-list" id="cat-updates-crypto"></div>
+          <button class="add-btn" onclick="openModal('update','crypto')">+ Add Update</button>
+        </div>
+      </div>
+      <div class="cat-card cat-crypto" id="uc-card-crypto">
+        <div class="col-header" style="border-top:4px solid var(--crypto);cursor:pointer;" onclick="toggleUC('crypto')">
+          <span class="cat-q-label">Use Cases</span>
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <button class="q-add-btn" onclick="event.stopPropagation();openModal('usecase','crypto')">+ Add</button>
+            <span class="si-chevron">▾</span>
+          </div>
+        </div>
+        <div class="uc-body" id="cat-usecases-crypto"></div>
+      </div>
+    </div>
+    <div class="sidebar-col">
+      <div class="sw-card">
+        <div class="sw-header">
+          <span class="sw-title">Shared Workstreams</span>
+          <button class="sw-add-btn" onclick="openSWModal()">+ Add</button>
+        </div>
+        <div class="sw-body">
+          <div id="sw-matrix-crypto"></div>
+        </div>
+      </div>
+      <div class="q-card q-crypto">
+        <div class="q-header">
+          <span class="cat-q-label">Open Questions</span>
+          <button class="q-add-btn" onclick="openModal('question','crypto')">+ Add</button>
+        </div>
+        <div class="q-body" id="cat-questions-crypto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL: General updates + questions -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Add Update</div>
+      <div class="modal-subtitle" id="modal-subtitle"></div>
+    </div>
+    <div class="modal-body">
+      <div id="update-fields" style="display:flex;flex-direction:column;gap:0.85rem;">
+        <div class="modal-field">
+          <label class="modal-label">Updates <span class="modal-hint">— one per line</span></label>
+          <textarea class="modal-textarea" id="input-bullets" placeholder="Point one&#10;Point two&#10;Point three" style="min-height:120px;"></textarea>
+        </div>
+      </div>
+      <div id="question-fields" style="display:none;flex-direction:column;gap:0.85rem;">
+        <div class="modal-field">
+          <label class="modal-label">Question</label>
+          <textarea class="modal-textarea" id="input-question" placeholder="What is the open question or decision needed?"></textarea>
+        </div>
+      </div>
+      <div id="usecase-fields" style="display:none;flex-direction:column;gap:0.85rem;">
+        <div class="modal-field">
+          <label class="modal-label">Title <span class="modal-hint">— will render bold</span></label>
+          <input class="modal-input" id="input-uc-title" placeholder="e.g. Account Funding" />
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Sub-bullets <span class="modal-hint">— one per line</span></label>
+          <textarea class="modal-textarea" id="input-uc-bullets" placeholder="Customer deposits stablecoins to ADM account...&#10;Bypasses ACH delays — same-day trading..." style="min-height:140px;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveEntry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Sub-initiative bullet -->
+<div class="modal-overlay" id="si-modal-overlay" onclick="handleSIOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="si-modal-title">Add Update</div>
+      <div class="modal-subtitle" id="si-modal-subtitle"></div>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:0.85rem;">
+      <div class="modal-field">
+        <label class="modal-label">Status</label>
+        <select class="modal-select" id="si-input-rag">
+          <option value="">—</option>
+          <option value="green">Green</option>
+          <option value="amber">Amber</option>
+          <option value="red">Red</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Update</label>
+        <textarea class="modal-textarea" id="si-input-text" placeholder="Describe the update, decision, or status note..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSIModal()">Cancel</button>
+      <button class="btn-save" onclick="saveSIEntry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Shared Workstream -->
+<div class="modal-overlay" id="sw-modal-overlay" onclick="handleSWOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="sw-modal-title">Add Shared Workstream</div>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:0.85rem;">
+      <div class="modal-field">
+        <label class="modal-label">Workstream Name</label>
+        <input class="modal-input" id="sw-input-name" placeholder="e.g. Asset Reference Build" />
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Status</label>
+        <select class="modal-select" id="sw-input-rag">
+          <option value="green">On Track</option>
+          <option value="amber">At Risk</option>
+          <option value="red">Blocked</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Applies To</label>
+        <div style="display:flex;gap:1rem;padding-top:0.2rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;cursor:pointer;">
+            <input type="checkbox" id="sw-chk-stable" style="accent-color:var(--stable);"> Stablecoin
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;cursor:pointer;">
+            <input type="checkbox" id="sw-chk-token" style="accent-color:var(--token);"> Tokenized Securities
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;cursor:pointer;">
+            <input type="checkbox" id="sw-chk-crypto" style="accent-color:var(--crypto);"> Crypto
+          </label>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Note <span class="modal-hint">— optional</span></label>
+        <input class="modal-input" id="sw-input-note" placeholder="Brief context..." />
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between;">
+      <button id="sw-delete-btn" onclick="deleteSWEntry()" style="display:none;font-size:0.72rem;font-weight:500;color:var(--red);background:none;border:1px solid rgba(220,38,38,0.3);border-radius:var(--radius-sm);padding:0.5rem 1rem;cursor:pointer;">Delete</button>
+      <div style="display:flex;gap:0.6rem;">
+        <button class="btn-cancel" onclick="closeSWModal()">Cancel</button>
+        <button class="btn-save" onclick="saveSWEntry()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'apex_dashboard_v8';
+
+const SI_LABELS = {
+  dtc:  'DTC Pilot Program',
+  cust: 'Custodial Model',
+  fp:   'First Party Native Issuance'
+};
+
+let state = {
+  updates:  { stable:[], token:[], crypto:[] },
+  questions:{ stable:[], token:[], crypto:[] },
+  useCases: { stable:[], token:[], crypto:[] },
+  si:       { dtc:[], cust:[], fp:[] },
+  siCollapsed: { dtc:true, cust:true, fp:true },
+  ucCollapsed: { stable:false, token:false, crypto:false },
+  diagCollapsed: { acc:false, adm:false },
+  shared: []
+};
+
+let modal  = { type:null, col:null };
+let siModal = { key:null };
+let filters = { stable:null, token:null, crypto:null };
+
+/* ── PERSIST ── */
+function save() {
+  const s = JSON.stringify(state);
+  try { window.storage.set(STORAGE_KEY, s); } catch(e) {}
+  try { localStorage.setItem(STORAGE_KEY, s); } catch(e) {}
+  const time = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const el = document.getElementById('save-status');
+  if (el) el.textContent = `Saved at ${time}`;
+}
+
+const SEED = {
+  updates: {
+    stable: [
+      { id: 1001, bullets: ['ADM entity creation and bank account opening remain the critical path blocker — gates MTL filings and Customers Bank account structure finalization'] },
+      { id: 1002, bullets: ['Customers Bank (CBIT/cubiX) evaluated as fiat settlement rail for ADM — handles USD leg of stablecoin mint/burn flows 24/7; not a reserve holder'] },
+      { id: 1003, bullets: ['FBO vs. Trading Account structure under compliance review — FBO use case triggers money transmission questions in most states'] },
+      { id: 1004, bullets: ['GENIUS Act signed July 2025 — payment stablecoins excluded from securities definition; Covered Stablecoin framework applies in interim; PPSI licensing pathway TBD'] },
+      { id: 1005, bullets: ['Yield-bearing stablecoin classification open — GENIUS Act prohibits yield to holders; SEC April 2025 framework creates product constraint on any interest-bearing structure'] },
+    ],
+    token: [
+      { id: 2001, bullets: ['ACC is the registered BD for tokenized securities clearing, ATS operations, and Rule 15c3-3 compliance'] },
+      { id: 2002, bullets: ['Superstate evaluated — holder-of-record model (Apex as holder, sub-ledger to correspondents) maps cleanly to ACC\'s existing omnibus structure'] },
+      { id: 2003, bullets: ['Superstate AMM contingent on SEC innovation exemption — domestic onchain securities AMM likely triggers ATS registration; no timeline confirmed'] },
+      { id: 2004, bullets: ['Figure Technologies (OPEN network) assessed — most aggressive RWA builder in market; question is vendor vs. competitor; has Provenance Blockchain rails, ATS, and DeFi integrations'] },
+      { id: 2005, bullets: ['tZero flagged as competitive threat — approaching correspondent BDs directly with tokenized securities distribution'] },
+    ],
+    crypto: [
+      { id: 3001, bullets: ['Bakkt (Classic) is current live CAAS partner — fully disclosed to correspondents; AscendOS migration targeted late 2Q26 / early 3Q26'] },
+      { id: 3002, bullets: ['Coinbase and Crypto.com targeted as primary CAAS exchange partners under ADM direct infrastructure — target 2027'] },
+      { id: 3003, bullets: ['ACC cannot hold non-brokerable assets (BTC, ETH) — Rule 15c3-3 constraint; ADM exists as separate entity outside BD wrapper specifically for this reason'] },
+      { id: 3004, bullets: ['Only ~2 of 185 correspondent BDs currently access crypto through Apex — core entrenchment opportunity before competitors approach them directly'] },
+      { id: 3005, bullets: ['Correspondent propensity scoring model in progress — BigQuery on apex-internal-hub-prd-00, Looker Studio choropleth heatmap + ranked client action table'] },
+    ]
+  },
+  questions: {
+    stable: [
+      { id: 4001, text: 'Can ADM use an FBO account at Customers Bank without triggering money transmission in states where we don\'t yet have MTLs?' },
+      { id: 4002, text: 'Which PPSI pathway does ADM pursue — state trust company, national trust bank, or OCC federal qualified issuer license?' },
+      { id: 4003, text: 'Does ADM satisfy the Advisers Act qualified custodian definition? Assessment still open.' },
+      { id: 4004, text: 'What is the reserve custody structure for stablecoins? Customers Bank handles fiat rail only — separate custodian still needed for reserve assets.' },
+    ],
+    token: [
+      { id: 5001, text: 'Does the Superstate AMM create an unregistered trading venue problem for ACC if correspondent clients trade through it?' },
+      { id: 5002, text: 'How does Rule 15c3-3 apply to tokenized securities settlement — does on-chain settlement satisfy the customer protection rule?' },
+      { id: 5003, text: 'On-chain securities lending — not addressed by existing SEC statements on protocol staking or tokenized securities; remains unresolved.' },
+      { id: 5004, text: 'Who is the qualified custodian for the tokenized representation in a third-party wrapper model? Two-layer custody obligation: underlying security + token.' },
+    ],
+    crypto: [
+      { id: 6001, text: 'Once ADM entity is stood up, can it serve as Coinbase Prime\'s omnibus institutional counterparty?' },
+      { id: 6002, text: 'KYT alone is insufficient in an omnibus wallet structure — what is the full AML stack? (KYC/CDD + internal transaction monitoring + Travel Rule + behavioral analytics)' },
+      { id: 6003, text: 'Coinbase is the most credible competitive threat — its BD registration, Base L2, existing CAAS partnership, and visibility into Apex\'s correspondent network make it a direct intermediary risk. What is the mitigation plan?' },
+    ]
+  },
+  si: {
+    dtc: [
+      { id: 7001, rag: 'amber', text: 'Third-party tokenization model — tokenized security issued by a party unaffiliated with the underlying issuer; ACC acts as clearing intermediary against DTCC infrastructure', date: 'Apr 2' },
+      { id: 7002, rag: 'amber', text: 'Holder rights under third-party wrapper may differ materially from underlying security — economic and voting rights run against ADM/ACC, not the original issuer; disclosure obligation is explicit in SEC/CFTC release 33-11412', date: 'Apr 2' },
+      { id: 7003, rag: 'red', text: 'DTCC integration dependency — no active DTCC workstream initiated yet', date: 'Apr 2' },
+    ],
+    cust: [
+      { id: 8001, rag: 'amber', text: 'ACC holds underlying security, issues tokenized representation — creates two-layer custody obligation (underlying + token); both layers require qualified custodian treatment', date: 'Apr 2' },
+      { id: 8002, rag: 'amber', text: 'Superstate custodial model evaluated — Apex as holder of record, sub-ledger to correspondents; maps to ACC\'s existing omnibus structure; compliance review pending', date: 'Apr 2' },
+      { id: 8003, rag: 'red', text: 'Qualified custodian status for tokenized representation remains unresolved — Advisers Act definition does not cleanly address onchain instruments', date: 'Apr 2' },
+    ],
+    fp: [
+      { id: 9001, rag: 'green', text: 'Issuer-sponsored onchain issuance — security issued natively on blockchain from inception; cleanest investor rights structure (rights run directly against issuer)', date: 'Apr 2' },
+      { id: 9002, rag: 'amber', text: 'Figure Technologies OPEN network is the most active player in this model — evaluating as vendor or partner for ACC; has ATS, Provenance Blockchain rails, BitGo custody', date: 'Apr 2' },
+      { id: 9003, rag: 'red', text: 'Highest regulatory complexity of the three models — SEC registration requirements apply from inception; no exemptive relief pathway confirmed', date: 'Apr 2' },
+    ]
+  },
+  useCases: {
+    stable: [],
+    token: [],
+    crypto: []
+  },
+  siCollapsed: { dtc: true, cust: true, fp: true },
+  ucCollapsed: { stable: false, token: false, crypto: false },
+  diagCollapsed: { acc: false, adm: false },
+  shared: [
+    { id: 9901, name: 'Asset Reference Build', rag: 'amber', products: ['stable','token','crypto'], note: 'Two-level reference table: instrument level (contract address) + security level (CUSIP)' }
+  ]
+};
+
+async function load() {
+  try {
+    const r = await window.storage.get(STORAGE_KEY);
+    if (r?.value) { state = JSON.parse(r.value); render(); return; }
+  } catch(e) {}
+  try {
+    const l = localStorage.getItem(STORAGE_KEY);
+    if (l) { state = { ...state, ...JSON.parse(l) }; render(); return; }
+  } catch(e) {}
+  // No saved state — load seed data
+  state = JSON.parse(JSON.stringify(SEED));
+  render();
+}
+
+/* ── DATE ── */
+document.getElementById('datestamp').textContent =
+  new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+/* ── TAB SWITCHING ── */
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  ['main','stable','token','crypto'].forEach(v => {
+    const view = document.getElementById(`view-${v}`);
+    if (view) view.style.display = v === name ? 'block' : 'none';
+  });
+}
+
+/* ── DIAGRAM IMAGES ── */
+const DIAG_KEYS = { acc: 'apex_diag_acc', adm: 'apex_diag_adm' };
+
+function uploadDiag(key, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const b64 = e.target.result;
+    localStorage.setItem(DIAG_KEYS[key], b64);
+    applyDiagImage(key, b64);
+    showToast('Image saved');
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyDiagImage(key, b64) {
+  const img = document.getElementById(`diag-img-${key}`);
+  const placeholder = document.getElementById(`diag-placeholder-${key}`);
+  if (img && b64) {
+    img.src = b64;
+    img.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+  }
+}
+
+function loadDiagImages() {
+  ['acc','adm'].forEach(key => {
+    const b64 = localStorage.getItem(DIAG_KEYS[key]);
+    if (b64) applyDiagImage(key, b64);
+  });
+}
+
+/* ── TOGGLE DIAGRAMS ── */
+function toggleDiag(key) {
+  state.diagCollapsed[key] = !state.diagCollapsed[key];
+  save();
+  const card = document.getElementById(`diag-card-${key}`);
+  if (card) card.classList.toggle('diag-collapsed', state.diagCollapsed[key]);
+}
+
+function applyDiagState() {
+  ['acc','adm'].forEach(key => {
+    const card = document.getElementById(`diag-card-${key}`);
+    if (card) card.classList.toggle('diag-collapsed', !!state.diagCollapsed[key]);
+  });
+}
+
+/* ── TOGGLE USE CASES ── */
+function toggleUC(col) {
+  state.ucCollapsed[col] = !state.ucCollapsed[col];
+  save();
+  const card = document.getElementById(`uc-card-${col}`);
+  if (card) card.classList.toggle('uc-collapsed', state.ucCollapsed[col]);
+}
+
+/* ── TOGGLE SUB-INITIATIVE ── */
+function toggleSI(key) {
+  state.siCollapsed[key] = !state.siCollapsed[key];
+  save();
+  ['', 'cat-'].forEach(prefix => {
+    const card = document.getElementById(`${prefix}si-${key}`);
+    if (card) card.classList.toggle('collapsed', state.siCollapsed[key]);
+  });
+}
+
+/* ── GENERAL MODAL ── */
+function openModal(type, col) {
+  modal = {type, col};
+  const label = col==='stable'?'Stablecoin':col==='token'?'Tokenized Securities':'Crypto';
+  const typeLabel = type==='update'?'Add Update':type==='question'?'Add Question':'Add Use Case';
+  document.getElementById('modal-title').textContent = `${typeLabel} — ${label}`;
+  document.getElementById('modal-subtitle').textContent = '';
+  document.getElementById('update-fields').style.display   = type==='update'   ? 'flex' : 'none';
+  document.getElementById('question-fields').style.display = type==='question'  ? 'flex' : 'none';
+  document.getElementById('usecase-fields').style.display  = type==='usecase'   ? 'flex' : 'none';
+  if (type==='update') {
+    document.getElementById('input-bullets').value='';
+  } else if (type==='question') {
+    document.getElementById('input-question').value='';
+  } else {
+    document.getElementById('input-uc-title').value='';
+    document.getElementById('input-uc-bullets').value='';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target.id==='modal-overlay') closeModal(); }
+
+function saveEntry() {
+  const {type,col} = modal;
+  if (type==='update') {
+    const rawB = document.getElementById('input-bullets').value.trim();
+    const bullets = rawB ? rawB.split('\n').map(b=>b.replace(/^[•\-\*]\s*/,'').trim()).filter(Boolean) : [];
+    if (!bullets.length) return;
+    state.updates[col].unshift({ id:Date.now(), bullets });
+  } else if (type==='question') {
+    const q = document.getElementById('input-question').value.trim();
+    if (!q) return;
+    state.questions[col].push({id:Date.now(), text:q});
+  } else if (type==='usecase') {
+    const title = document.getElementById('input-uc-title').value.trim();
+    if (!title) return;
+    const rawB = document.getElementById('input-uc-bullets').value.trim();
+    const bullets = rawB ? rawB.split('\n').map(b=>b.replace(/^[•\-\*]\s*/,'').trim()).filter(Boolean) : [];
+    state.useCases[col].push({id:Date.now(), title, bullets});
+  }
+  save(); render(); closeModal(); showToast('Saved');
+}
+
+/* ── SUB-INITIATIVE MODAL ── */
+function openSIModal(key) {
+  siModal = {key};
+  document.getElementById('si-modal-title').textContent = `Add Update`;
+  document.getElementById('si-modal-subtitle').textContent = SI_LABELS[key];
+  document.getElementById('si-input-text').value='';
+  document.getElementById('si-input-rag').value='';
+  document.getElementById('si-modal-overlay').classList.add('open');
+}
+
+function closeSIModal() { document.getElementById('si-modal-overlay').classList.remove('open'); }
+function handleSIOverlayClick(e) { if (e.target.id==='si-modal-overlay') closeSIModal(); }
+
+function saveSIEntry() {
+  const {key} = siModal;
+  const text = document.getElementById('si-input-text').value.trim();
+  if (!text) return;
+  state.si[key].unshift({
+    id: Date.now(),
+    rag: document.getElementById('si-input-rag').value,
+    text,
+    date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})
+  });
+  save(); renderSI(key); closeSIModal(); showToast('Saved');
+}
+
+function deleteSIEntry(key, id) {
+  state.si[key] = state.si[key].filter(e=>e.id!==id);
+  save(); renderSI(key);
+}
+
+/* ── DELETE ── */
+function deleteUpdate(col,id) { state.updates[col]=state.updates[col].filter(u=>u.id!==id); save(); render(); }
+function deleteQuestion(col,id) { state.questions[col]=state.questions[col].filter(q=>q.id!==id); save(); render(); }
+function deleteUseCase(col,id) { state.useCases[col]=state.useCases[col].filter(q=>q.id!==id); save(); renderUseCases(col); }
+
+/* ── FILTER ── */
+function filterCol(col,tag,el) {
+  el.closest('.subtags').querySelectorAll('.subtag').forEach(s=>s.classList.remove('active'));
+  filters[col] = filters[col]===tag ? null : tag;
+  if (filters[col]) el.classList.add('active');
+  renderUpdates(col);
+}
+
+/* ── DRAG TO REORDER ── */
+let dragState = {};
+
+function onUpdateDragStart(e, col, id) {
+  dragState = { type:'update', col, id };
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.currentTarget.style.opacity = '0.4', 0);
+}
+function onUpdateDragEnd(e) {
+  e.currentTarget.style.opacity = '';
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+function onUpdateDrop(e, col, toId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragState.type !== 'update' || dragState.col !== col || dragState.id === toId) return;
+  const arr = state.updates[col];
+  const fromIdx = arr.findIndex(u => u.id === dragState.id);
+  const toIdx   = arr.findIndex(u => u.id === toId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [moved] = arr.splice(fromIdx, 1);
+  arr.splice(toIdx, 0, moved);
+  save(); renderUpdates(col);
+}
+
+function onSIDragStart(e, key, id) {
+  dragState = { type:'si', key, id };
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.currentTarget.style.opacity = '0.4', 0);
+}
+function onSIDragEnd(e) {
+  e.currentTarget.style.opacity = '';
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+function onSIDrop(e, key, toId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragState.type !== 'si' || dragState.key !== key || dragState.id === toId) return;
+  const arr = state.si[key];
+  const fromIdx = arr.findIndex(en => en.id === dragState.id);
+  const toIdx   = arr.findIndex(en => en.id === toId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [moved] = arr.splice(fromIdx, 1);
+  arr.splice(toIdx, 0, moved);
+  save(); renderSI(key);
+}
+
+/* ── INLINE EDIT: UPDATE BULLETS ── */
+function editBullet(col, id, idx, li) {
+  const update = state.updates[col].find(u => u.id === id);
+  if (!update) return;
+  li.innerHTML = `<textarea class="bullet-edit-input" rows="4" onkeydown="handleBulletKey(event,'${col}',${id},${idx},this)" onclick="event.stopPropagation()"></textarea><span class="bullet-edit-actions"><button class="save-btn" onclick="saveBulletEdit('${col}',${id},${idx},this.closest('li').querySelector('textarea'))">Save</button><button onclick="renderUpdates('${col}')">Cancel</button></span>`;
+  const input = li.querySelector('textarea');
+  input.value = update.bullets[idx];
+  input.focus();
+  input.select();
+}
+
+function saveBulletEdit(col, id, idx, textarea) {
+  const newText = textarea.value.trim();
+  if (!newText) return;
+  const update = state.updates[col].find(u => u.id === id);
+  if (!update) return;
+  update.bullets[idx] = newText;
+  save(); renderUpdates(col);
+}
+
+function handleBulletKey(e, col, id, idx, textarea) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveBulletEdit(col, id, idx, textarea); }
+  if (e.key === 'Escape') renderUpdates(col);
+}
+
+/* ── INLINE EDIT: SI ENTRIES ── */
+function editSIEntry(key, id, span) {
+  const entry = state.si[key].find(e => e.id === id);
+  if (!entry) return;
+  const meta = span.closest('.si-bullet-meta');
+  meta.innerHTML = `
+    <select class="modal-select" style="font-size:0.7rem;padding:0.25rem 0.5rem;margin-bottom:0.3rem;" onclick="event.stopPropagation()">
+      <option value="">— No status</option>
+      <option value="green">Green</option>
+      <option value="amber">Amber</option>
+      <option value="red">Red</option>
+    </select>
+    <textarea class="bullet-edit-input" rows="4" onkeydown="handleSIKey(event,'${key}',${id},this)" onclick="event.stopPropagation()"></textarea>
+    <span class="bullet-edit-actions">
+      <button class="save-btn" onclick="saveSIEdit('${key}',${id},this.closest('.si-bullet-meta'))">Save</button>
+      <button onclick="renderSI('${key}')">Cancel</button>
+    </span>`;
+  meta.querySelector('select').value = entry.rag || '';
+  const input = meta.querySelector('textarea');
+  input.value = entry.text;
+  input.focus();
+  input.select();
+}
+
+function saveSIEdit(key, id, meta) {
+  const textarea = meta.querySelector('textarea');
+  const select = meta.querySelector('select');
+  const newText = textarea.value.trim();
+  if (!newText) return;
+  const entry = state.si[key].find(e => e.id === id);
+  if (!entry) return;
+  entry.text = newText;
+  entry.rag = select ? select.value : entry.rag;
+  save(); renderSI(key);
+}
+
+function handleSIKey(e, key, id, textarea) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveSIEdit(key, id, textarea.closest('.si-bullet-meta')); }
+  if (e.key === 'Escape') renderSI(key);
+}
+
+/* ── SHARED WORKSTREAMS MODAL ── */
+let swModal = { mode: 'add', id: null };
+
+function openSWModal(id) {
+  swModal = id ? { mode:'edit', id } : { mode:'add', id:null };
+  if (id) {
+    const w = state.shared.find(w => w.id === id);
+    if (!w) return;
+    document.getElementById('sw-input-name').value = w.name;
+    document.getElementById('sw-input-note').value = w.note || '';
+    document.getElementById('sw-input-rag').value = w.rag;
+    document.getElementById('sw-chk-stable').checked = w.products.includes('stable');
+    document.getElementById('sw-chk-token').checked  = w.products.includes('token');
+    document.getElementById('sw-chk-crypto').checked = w.products.includes('crypto');
+    document.getElementById('sw-modal-title').textContent = 'Edit Shared Workstream';
+    document.getElementById('sw-delete-btn').style.display = 'block';
+  } else {
+    document.getElementById('sw-input-name').value = '';
+    document.getElementById('sw-input-note').value = '';
+    document.getElementById('sw-input-rag').value = 'green';
+    document.getElementById('sw-chk-stable').checked = false;
+    document.getElementById('sw-chk-token').checked  = false;
+    document.getElementById('sw-chk-crypto').checked = false;
+    document.getElementById('sw-modal-title').textContent = 'Add Shared Workstream';
+    document.getElementById('sw-delete-btn').style.display = 'none';
+  }
+  document.getElementById('sw-modal-overlay').classList.add('open');
+}
+
+function closeSWModal() { document.getElementById('sw-modal-overlay').classList.remove('open'); }
+function handleSWOverlayClick(e) { if (e.target.id === 'sw-modal-overlay') closeSWModal(); }
+
+function saveSWEntry() {
+  const name = document.getElementById('sw-input-name').value.trim();
+  if (!name) return;
+  const products = [];
+  if (document.getElementById('sw-chk-stable').checked) products.push('stable');
+  if (document.getElementById('sw-chk-token').checked)  products.push('token');
+  if (document.getElementById('sw-chk-crypto').checked) products.push('crypto');
+  if (!products.length) return;
+  const entry = {
+    id: swModal.id || Date.now(),
+    name,
+    rag: document.getElementById('sw-input-rag').value,
+    products,
+    note: document.getElementById('sw-input-note').value.trim()
+  };
+  if (swModal.mode === 'edit') {
+    const idx = state.shared.findIndex(w => w.id === swModal.id);
+    if (idx !== -1) state.shared[idx] = entry;
+  } else {
+    state.shared.push(entry);
+  }
+  save(); renderShared(); closeSWModal(); showToast('Saved');
+}
+
+function deleteSWEntry() {
+  if (!swModal.id) return;
+  state.shared = state.shared.filter(w => w.id !== swModal.id);
+  save(); renderShared(); closeSWModal(); showToast('Deleted');
+}
+
+function toggleSWNote(id) {
+  const el = document.getElementById(`sw-note-${id}`);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderShared() {
+  ['stable','token','crypto'].forEach(col => {
+    const el = document.getElementById(`sw-matrix-${col}`);
+    if (!el) return;
+    const relevant = state.shared.filter(w => w.products.includes(col));
+    if (!relevant.length) {
+      el.innerHTML = `<div class="sw-empty">No shared workstreams yet</div>`;
+      return;
+    }
+    const colLabel = { stable:'Stable', token:'Token', crypto:'Crypto' };
+    const cols = ['stable','token','crypto'];
+    el.innerHTML = `
+      <table class="sw-table">
+        <thead>
+          <tr>
+            <th class="sw-name-col">Workstream</th>
+            ${cols.map(c=>`<th class="${c===col?'sw-col-cur':''}">${colLabel[c]}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${relevant.map(w=>`
+            <tr>
+              <td class="sw-name-cell">
+                <div style="display:flex;align-items:center;gap:0.4rem;">
+                  <span class="sw-rag" style="background:${w.rag==='green'?'var(--green)':w.rag==='amber'?'var(--amber)':'var(--red)'}"></span>
+                  <span class="sw-name-link" onclick="openSWModal(${w.id})">${esc(w.name)}</span>
+                  ${w.note ? `<span class="sw-note-toggle" onclick="toggleSWNote(${w.id})">···</span>` : ''}
+                </div>
+                ${w.note ? `<div id="sw-note-${w.id}" class="sw-note-text" style="display:none;">${esc(w.note)}</div>` : ''}
+              </td>
+              ${cols.map(c=>`
+                <td class="${c===col?'sw-col-cur':''}">
+                  <span class="sw-dot ${w.products.includes(c)?`sw-dot-filled-${c}`:'sw-dot-empty'}"></span>
+                </td>`).join('')}
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  });
+}
+
+
+function tagClass(t) { return t==='ADM'?'tag-adm':t==='ACC'?'tag-acc':t==='CAAS'?'tag-caas':'tag-all'; }
+function ragLabel(r) { return r==='green'?'On Track':r==='amber'?'At Risk':'Blocked'; }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderText(s) { return esc(s).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); }
+
+function renderUpdates(col) {
+  const items = state.updates[col];
+  const html = !items.length
+    ? `<div class="empty-state">No updates yet</div>`
+    : items.map(u=>`
+        <div class="update-entry" draggable="true"
+             ondragstart="onUpdateDragStart(event,'${col}',${u.id})"
+             ondragend="onUpdateDragEnd(event)"
+             ondragover="event.preventDefault();this.classList.add('drag-over')"
+             ondragleave="this.classList.remove('drag-over')"
+             ondrop="onUpdateDrop(event,'${col}',${u.id})">
+          <button class="entry-delete" draggable="false" onclick="event.stopPropagation();deleteUpdate('${col}',${u.id})">✕</button>
+          <div class="entry-inner">
+            <span class="drag-handle">⠿</span>
+            <ul class="entry-bullets">${u.bullets.map((b,i)=>`<li onclick="editBullet('${col}',${u.id},${i},this)">${renderText(b)}</li>`).join('')}</ul>
+          </div>
+        </div>`).join('');
+  ['', 'cat-'].forEach(prefix => {
+    const el = document.getElementById(`${prefix}updates-${col}`);
+    if (el) el.innerHTML = html;
+  });
+}
+
+function renderSI(key) {
+  const items = state.si[key];
+  const html = !items.length
+    ? `<div class="empty-state">No updates yet</div>`
+    : items.map(e=>`
+        <div class="si-bullet-item" draggable="true"
+             ondragstart="onSIDragStart(event,'${key}',${e.id})"
+             ondragend="onSIDragEnd(event)"
+             ondragover="event.preventDefault();this.classList.add('drag-over')"
+             ondragleave="this.classList.remove('drag-over')"
+             ondrop="onSIDrop(event,'${key}',${e.id})">
+          <span class="drag-handle">⠿</span>
+          <span class="si-bullet-dash">•</span>
+          <div class="si-bullet-meta">
+            <span class="si-bullet-text" onclick="editSIEntry('${key}',${e.id},this)">${renderText(e.text)}</span>
+            ${e.rag ? `<span class="si-bullet-rag ${e.rag}">${e.rag.charAt(0).toUpperCase()+e.rag.slice(1)}</span>` : ''}
+          </div>
+          <button class="si-delete" onclick="deleteSIEntry('${key}',${e.id})">✕</button>
+        </div>`).join('');
+  ['', 'cat-'].forEach(prefix => {
+    const el = document.getElementById(`${prefix}si-list-${key}`);
+    if (el) el.innerHTML = html;
+    const card = document.getElementById(`${prefix}si-${key}`);
+    if (card) card.classList.toggle('collapsed', !!state.siCollapsed[key]);
+  });
+}
+
+function renderUseCases(col) {
+  const items = state.useCases[col];
+  const html = !items.length
+    ? `<div class="empty-state">No use cases yet</div>`
+    : items.map(q=>`
+        <div class="uc-item">
+          <button class="uc-delete" onclick="deleteUseCase('${col}',${q.id})">✕</button>
+          <div style="display:flex;align-items:baseline;gap:0.5rem;">
+            <span class="q-num">${String(items.indexOf(q)+1).padStart(2,'0')}</span>
+            <div class="uc-item-title">${esc(q.title)}</div>
+          </div>
+          ${q.bullets && q.bullets.length ? `<ul class="uc-sub-bullets">${q.bullets.map(b=>`<li>${renderText(b)}</li>`).join('')}</ul>` : ''}
+        </div>`).join('');
+  const el = document.getElementById(`cat-usecases-${col}`);
+  if (el) el.innerHTML = html;
+  const card = document.getElementById(`uc-card-${col}`);
+  if (card) card.classList.toggle('uc-collapsed', !!state.ucCollapsed[col]);
+}
+
+function renderQuestions(col) {
+  const items = state.questions[col];
+  const html = !items.length
+    ? `<div class="empty-state">No open questions</div>`
+    : items.map((q,i)=>`
+        <div class="q-item">
+          <span class="q-num">${String(i+1).padStart(2,'0')}</span>
+          <span class="q-text">${esc(q.text)}</span>
+          <button class="q-delete" onclick="deleteQuestion('${col}',${q.id})">✕</button>
+        </div>`).join('');
+  ['', 'cat-'].forEach(prefix => {
+    const el = document.getElementById(`${prefix}questions-${col}`);
+    if (el) el.innerHTML = html;
+  });
+}
+
+function renderJiraActivity(items) {
+  const el = document.getElementById('jira-activity-grid');
+  if (!el) return;
+  if (!items || !items.length) {
+    el.innerHTML = `<div class="jira-empty">No recent Jira activity — run /jira-digest to populate.</div>`;
+    return;
+  }
+  el.innerHTML = items.map(item => `
+    <div class="jira-entry">
+      <div class="jira-summary">${esc(item.summary)}</div>
+      <div class="jira-meta">
+        <span><span class="jira-key">${esc(item.key)}</span> &middot; ${esc(item.title)}</span>
+        <span>${esc(item.date || '')}</span>
+      </div>
+    </div>`).join('');
+}
+
+async function loadJiraActivity() {
+  try {
+    const res = await fetch('jira_activity.json');
+    if (!res.ok) { renderJiraActivity([]); return; }
+    const data = await res.json();
+    renderJiraActivity(data);
+  } catch(e) {
+    renderJiraActivity([]);
+  }
+}
+
+function render() {
+  ['stable','token','crypto'].forEach(col=>{renderUpdates(col);renderQuestions(col);renderUseCases(col);});
+  ['dtc','cust','fp'].forEach(key=>renderSI(key));
+  renderShared();
+  applyDiagState();
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+load();
+loadJiraActivity();
+loadDiagImages();
+</script>
+</body>
+</html>
